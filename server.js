@@ -35,10 +35,12 @@ async function runSeedIfConfigured(client) {
 }
 
 async function withDb(fn) {
-  if (!DATABASE_URL) {
-    throw new Error('DATABASE_URL is not set');
+  // Stackblaze injects the Postgres add-on as PGHOST/PGUSER/PGPASSWORD/…,
+  // which pg reads by itself; DATABASE_URL wins when set.
+  if (!DATABASE_URL && !process.env.PGHOST) {
+    throw new Error('Neither DATABASE_URL nor PGHOST is set');
   }
-  const client = new Client({ connectionString: DATABASE_URL });
+  const client = new Client(DATABASE_URL ? { connectionString: DATABASE_URL } : {});
   await client.connect();
   try {
     return await fn(client);
