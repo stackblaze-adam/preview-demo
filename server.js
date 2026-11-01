@@ -70,7 +70,7 @@ const server = http.createServer(async (req, res) => {
         );
         const count = await client.query('SELECT COUNT(*)::int AS n FROM visits');
         return {
-          message: 'Stackblaze preview demo',
+          message: 'Stackblaze preview demo (PR #4)',
           visitCount: count.rows[0].n,
           seed,
           ...previewInfo(),
